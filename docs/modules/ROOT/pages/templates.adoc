@@ -34,6 +34,11 @@ Here's an overview of the available UI model:
 | site.url
 | The base URL of the site, if specified.
 
+| site.path
+| The pathname segment of the site.url under which the site is hosted (e.g., /docs).
+Only set if site.url is defined.
+(since Antora 2.1)
+
 | site.title
 | The title of the site.
 
@@ -60,8 +65,10 @@ Here's an overview of the available UI model:
 Sourced from AsciiDoc and converted to HTML by the Asciidoctor processor.
 
 | page.attributes
-| AsciiDoc header attributes that are prefixed with `page-`.
-The `page-` prefix is dropped from these names.
+| All AsciiDoc header attributes prefixed with `page-`.
+The `page-` prefix is dropped from the name in this model.
+For example, the header attribute `page-foo` (e.g., `:page-foo: bar`) is accessed via the UI model as `page.attributes.foo`.
+The `page-` prefix is required to isolate page-related attributes from all other document attributes in AsciiDoc.
 
 | page.description
 | The text of the description attribute in the AsciiDoc header, if specified.
@@ -101,11 +108,14 @@ It's often used as the base URL to generate relative URLs from this page.
 
 | page.canonicalUrl
 | The canonical URL for the current page.
-If there are older versions of the page, the canonical URL is the URL of the latest version.
-//If this is an aspect page, the canonical URL is the URL of the primary (non-aspect) page.
+The canonicalUrl is only set if site.url is set.
+If there are multiple versions of the component, the canonical URL is the qualified URL of the most recent version of the page (excluding any prerelease versions).
+If there's only a single version of the component, the canonical URL is the qualified URL of the current page.
 
 | page.editUrl
-| The URL to edit the current page, typically on GitHub.
+| The URL to edit the current page (typically a web-based editor on the git host).
+This value will not be set if the repository requires authentication or the repository URL embeds credentials.
+A quick way to disable this property (and thus the "Edit this Page" link) is to start the repository URL with `\https://git@`.
 
 | page.home
 | Indicates whether the current page is the home page of the site.
